@@ -72,39 +72,74 @@ const LandingPage = ({ onLogin, onSignup }) => {
   return (
     <div className="landing-page">
       <div className="landing-container">
-        <div className="landing-header">
-          <div className="brand-logo">
-            <span className="logo-icon">🏋️‍♀️</span>
-            <h1 className="brand-name">FitBuddy</h1>
+        {/* Left Side - Branding & Features */}
+        <div className="landing-left">
+          <div className="brand-section">
+            <div className="brand-logo">
+              <span className="logo-icon">🏋️‍♀️</span>
+              <h1 className="brand-name">FitBuddy</h1>
+            </div>
+            <p className="brand-tagline">Transform your fitness journey with AI-powered personalized coaching</p>
           </div>
-          <p className="brand-tagline">Your AI-Powered Personal Fitness Companion</p>
+          
+          <div className="features-showcase">
+            <div className="feature-card">
+              <div className="feature-icon">🎯</div>
+              <div>
+                <h3>Smart Planning</h3>
+                <p>AI-generated workout & nutrition plans tailored to your goals</p>
+              </div>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">📈</div>
+              <div>
+                <h3>Progress Tracking</h3>
+                <p>Real-time analytics to monitor your fitness journey</p>
+              </div>
+            </div>
+            
+            <div className="feature-card">
+              <div className="feature-icon">🏆</div>
+              <div>
+                <h3>Community & Challenges</h3>
+                <p>Stay motivated with community support and challenges</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="testimonial">
+            <p>"FitBuddy helped me achieve my fitness goals faster than I ever imagined!"</p>
+            <span>- Sarah M., Marathon Runner</span>
+          </div>
         </div>
-
-        <div className="auth-section">
-          <div className="auth-card">
+        
+        {/* Right Side - Authentication Form */}
+        <div className="landing-right">
+          <div className="auth-container">
+            <div className="auth-header">
+              <h2>{isLogin ? 'Welcome Back!' : 'Join FitBuddy Today'}</h2>
+              <p>{isLogin ? 'Continue your fitness journey' : 'Start your transformation now'}</p>
+            </div>
+            
             <div className="auth-toggle">
               <button 
                 className={`toggle-btn ${isLogin ? 'active' : ''}`}
                 onClick={() => setIsLogin(true)}
+                type="button"
               >
                 Sign In
               </button>
               <button 
                 className={`toggle-btn ${!isLogin ? 'active' : ''}`}
                 onClick={() => setIsLogin(false)}
+                type="button"
               >
                 Sign Up
               </button>
             </div>
-
+            
             <form onSubmit={handleSubmit} className="auth-form">
-              <h2 className="auth-title">
-                {isLogin ? 'Welcome Back!' : 'Start Your Fitness Journey'}
-              </h2>
-              <p className="auth-subtitle">
-                {isLogin ? 'Sign in to continue your progress' : 'Create your account to get started'}
-              </p>
-
               {!isLogin && (
                 <div className="form-group">
                   <label htmlFor="name">Full Name</label>
@@ -120,21 +155,21 @@ const LandingPage = ({ onLogin, onSignup }) => {
                   {errors.name && <span className="error-message">{errors.name}</span>}
                 </div>
               )}
-
+              
               <div className="form-group">
                 <label htmlFor="email">Email Address</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  placeholder="Enter your email"
+                  placeholder="your@email.com"
                   value={formData.email}
                   onChange={handleInputChange}
                   className={errors.email ? 'error' : ''}
                 />
                 {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
-
+              
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input
@@ -148,7 +183,7 @@ const LandingPage = ({ onLogin, onSignup }) => {
                 />
                 {errors.password && <span className="error-message">{errors.password}</span>}
               </div>
-
+              
               {!isLogin && (
                 <div className="form-group">
                   <label htmlFor="confirmPassword">Confirm Password</label>
@@ -164,44 +199,23 @@ const LandingPage = ({ onLogin, onSignup }) => {
                   {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
                 </div>
               )}
-
+              
               <button type="submit" className="auth-submit-btn">
-                {isLogin ? 'Sign In' : 'Create Account'}
+                {isLogin ? '🚀 Sign In' : '🎯 Create Account'}
               </button>
             </form>
-          </div>
-
-          <div className="features-preview">
-            <h3>What you'll get:</h3>
-            <div className="feature-list">
-              <div className="feature-item">
-                <span className="feature-icon">🎯</span>
-                <div className="feature-text">
-                  <h4>Personalized Plans</h4>
-                  <p>Custom workout and nutrition plans based on your goals</p>
-                </div>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">📊</span>
-                <div className="feature-text">
-                  <h4>Progress Tracking</h4>
-                  <p>Monitor your fitness journey with detailed analytics</p>
-                </div>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🤖</span>
-                <div className="feature-text">
-                  <h4>AI Coaching</h4>
-                  <p>Get personalized advice and motivation 24/7</p>
-                </div>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🏆</span>
-                <div className="feature-text">
-                  <h4>Community Support</h4>
-                  <p>Join challenges and connect with like-minded people</p>
-                </div>
-              </div>
+            
+            <div className="auth-footer">
+              <p>
+                {isLogin ? "Don't have an account? " : "Already have an account? "}
+                <button 
+                  type="button"
+                  className="link-btn"
+                  onClick={() => setIsLogin(!isLogin)}
+                >
+                  {isLogin ? 'Sign up here' : 'Sign in here'}
+                </button>
+              </p>
             </div>
           </div>
         </div>

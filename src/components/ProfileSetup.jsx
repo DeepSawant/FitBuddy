@@ -345,37 +345,62 @@ const ProfileSetup = ({ onProfileComplete, userName }) => {
 
   return (
     <div className="profile-setup">
-      <div className="profile-container">
-        <div className="profile-header">
-          <h2>👋 Welcome, {userName}!</h2>
-          <p>Let's personalize your fitness journey</p>
-          
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${(currentStep / 4) * 100}%` }}></div>
+      <div className="profile-setup-container">
+        {/* Header Section */}
+        <div className="setup-header">
+          <div className="welcome-section">
+            <h1>👋 Welcome, {userName}!</h1>
+            <p>Let's create your personalized fitness profile in just a few steps</p>
           </div>
-          <span className="progress-text">Step {currentStep} of 4</span>
+          
+          <div className="progress-section">
+            <div className="step-indicators">
+              {[1, 2, 3, 4].map(step => (
+                <div key={step} className={`step-indicator ${currentStep >= step ? 'active' : ''} ${currentStep === step ? 'current' : ''}`}>
+                  <div className="step-number">{step}</div>
+                  <span className="step-label">
+                    {step === 1 && 'Basics'}
+                    {step === 2 && 'Lifestyle'}
+                    {step === 3 && 'Goals'}
+                    {step === 4 && 'Health'}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="progress-bar">
+              <div className="progress-fill" style={{ width: `${(currentStep / 4) * 100}%` }}></div>
+            </div>
+          </div>
         </div>
 
-        <div className="profile-form">
-          {currentStep === 1 && renderStep1()}
-          {currentStep === 2 && renderStep2()}
-          {currentStep === 3 && renderStep3()}
-          {currentStep === 4 && renderStep4()}
+        {/* Main Content */}
+        <div className="setup-content">
+          <div className="step-card">
+            {currentStep === 1 && renderStep1()}
+            {currentStep === 2 && renderStep2()}
+            {currentStep === 3 && renderStep3()}
+            {currentStep === 4 && renderStep4()}
+          </div>
+        </div>
 
-          <div className="form-actions">
+        {/* Navigation */}
+        <div className="setup-navigation">
+          <div className="nav-buttons">
             {currentStep > 1 && (
               <button type="button" className="btn-secondary" onClick={handleBack}>
-                ← Back
+                <span>←</span> Previous
               </button>
             )}
             
+            <div className="nav-spacer"></div>
+            
             {currentStep < 4 ? (
               <button type="button" className="btn-primary" onClick={handleNext}>
-                Next →
+                Next <span>→</span>
               </button>
             ) : (
               <button type="button" className="btn-primary" onClick={handleSubmit}>
-                Complete Setup 🎉
+                Complete Setup <span>🎉</span>
               </button>
             )}
           </div>
