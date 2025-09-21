@@ -1,120 +1,239 @@
-import React from 'react'
+import { useState } from 'react'
+import './App.css'
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('home')
+  const [userData, setUserData] = useState({
+    steps: 0,
+    water: 0,
+    workouts: 0,
+    mood: 5
+  })
+
+  const updateSteps = (steps) => {
+    setUserData(prev => ({ ...prev, steps: parseInt(steps) }))
+  }
+
+  const addWater = () => {
+    setUserData(prev => ({ ...prev, water: Math.min(prev.water + 1, 8) }))
+  }
+
+  const renderPage = () => {
+    switch(currentPage) {
+      case 'dashboard':
+        return (
+          <div className="page">
+            <h2>📊 Dashboard</h2>
+            <div className="dashboard-grid">
+              <div className="widget">
+                <h3>🏃‍♂️ Steps Today</h3>
+                <div className="progress-circle">
+                  <span className="progress-number">{userData.steps.toLocaleString()}</span>
+                  <span className="progress-goal">/ 10,000</span>
+                </div>
+                <div className="widget-controls">
+                  <input 
+                    type="number" 
+                    placeholder="Add steps"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        updateSteps(e.target.value)
+                        e.target.value = ''
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+              
+              <div className="widget">
+                <h3>💧 Water Intake</h3>
+                <div className="water-display">
+                  <span className="water-count">{userData.water} / 8 glasses</span>
+                  <div className="water-glasses">
+                    {Array(8).fill(0).map((_, i) => (
+                      <span key={i} className={`water-glass ${i < userData.water ? 'filled' : ''}`}>👥</span>
+                    ))}
+                  </div>
+                </div>
+                <button onClick={addWater} className="btn-primary">+ Add Glass</button>
+              </div>
+              
+              <div className="widget">
+                <h3>💪 Workouts</h3>
+                <div className="workout-count">
+                  <span>{userData.workouts} workouts this week</span>
+                </div>
+                <button onClick={() => setUserData(prev => ({ ...prev, workouts: prev.workouts + 1 }))} className="btn-primary">
+                  + Log Workout
+                </button>
+              </div>
+              
+              <div className="widget">
+                <h3>😊 Mood</h3>
+                <div className="mood-display">
+                  <span className="mood-score">{userData.mood}/10</span>
+                  <div className="mood-buttons">
+                    {[1,2,3,4,5,6,7,8,9,10].map(num => (
+                      <button 
+                        key={num}
+                        onClick={() => setUserData(prev => ({ ...prev, mood: num }))}
+                        className={`mood-btn ${userData.mood === num ? 'active' : ''}`}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      
+      case 'workouts':
+        return (
+          <div className="page">
+            <h2>💪 Workouts</h2>
+            <div className="workout-section">
+              <div className="quick-workouts">
+                <h3>Quick Log</h3>
+                <div className="workout-buttons">
+                  <button onClick={() => setUserData(prev => ({ ...prev, workouts: prev.workouts + 1 }))} className="workout-type-btn">
+                    🏃‍♂️ Cardio
+                  </button>
+                  <button onClick={() => setUserData(prev => ({ ...prev, workouts: prev.workouts + 1 }))} className="workout-type-btn">
+                    💪 Strength
+                  </button>
+                  <button onClick={() => setUserData(prev => ({ ...prev, workouts: prev.workouts + 1 }))} className="workout-type-btn">
+                    🧘‍♀️ Yoga
+                  </button>
+                </div>
+              </div>
+              <div className="workout-stats">
+                <h3>This Week: {userData.workouts} workouts</h3>
+                <p>Great job keeping active! 🎉</p>
+              </div>
+            </div>
+          </div>
+        )
+      
+      case 'nutrition':
+        return (
+          <div className="page">
+            <h2>🍎 Nutrition</h2>
+            <div className="nutrition-section">
+              <div className="quick-meals">
+                <h3>Quick Log</h3>
+                <div className="meal-buttons">
+                  <button className="meal-btn">🍳 Breakfast</button>
+                  <button className="meal-btn">🥙 Lunch</button>
+                  <button className="meal-btn">🍽️ Dinner</button>
+                  <button className="meal-btn">🍎 Snack</button>
+                </div>
+              </div>
+              <div className="hydration-reminder">
+                <h3>Hydration: {userData.water}/8 glasses today</h3>
+                <button onClick={addWater} className="btn-primary">+ Add Water</button>
+              </div>
+            </div>
+          </div>
+        )
+      
+      case 'community':
+        return (
+          <div className="page">
+            <h2>🏆 Community</h2>
+            <div className="community-section">
+              <div className="challenge-card">
+                <h3>30-Day Step Challenge</h3>
+                <p>Join 1,234 people walking 10,000 steps daily!</p>
+                <p>Your progress: {userData.steps >= 10000 ? '✅ Complete' : `${userData.steps}/10,000 steps`}</p>
+                <button className="btn-primary">Join Challenge</button>
+              </div>
+              <div className="challenge-card">
+                <h3>Weekly Workout Goal</h3>
+                <p>Complete 4 workouts this week</p>
+                <p>Progress: {userData.workouts}/4 workouts</p>
+                <button className="btn-primary">Join Challenge</button>
+              </div>
+            </div>
+          </div>
+        )
+      
+      default:
+        return (
+          <div className="hero-section">
+            <h1>Welcome to FitBuddy</h1>
+            <p className="hero-subtitle">Your Personal Fitness Companion</p>
+            <div className="features-grid">
+              <div className="feature-card" onClick={() => setCurrentPage('dashboard')}>
+                <h3>🎯 Interactive Dashboard</h3>
+                <p>Track steps, water, workouts, and mood in real-time</p>
+              </div>
+              <div className="feature-card" onClick={() => setCurrentPage('workouts')}>
+                <h3>💪 Workout Logging</h3>
+                <p>Quick log your cardio, strength, and yoga sessions</p>
+              </div>
+              <div className="feature-card" onClick={() => setCurrentPage('nutrition')}>
+                <h3>🍎 Nutrition Tracking</h3>
+                <p>Monitor meals and stay hydrated throughout the day</p>
+              </div>
+              <div className="feature-card" onClick={() => setCurrentPage('community')}>
+                <h3>🏆 Community Challenges</h3>
+                <p>Join fitness challenges and stay motivated with others</p>
+              </div>
+            </div>
+          </div>
+        )
+    }
+  }
+
   return (
-    <div style={{
-      fontFamily: 'Arial, sans-serif',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      minHeight: '100vh',
-      padding: '20px'
-    }}>
-      <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderRadius: '15px',
-        padding: '2rem',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
-      }}>
-        <h1 style={{
-          color: '#667eea',
-          textAlign: 'center',
-          fontSize: '3rem',
-          marginBottom: '1rem'
-        }}>🏋️‍♀️ FitBuddy</h1>
-        
-        <p style={{
-          textAlign: 'center',
-          fontSize: '1.3rem',
-          color: '#666',
-          marginBottom: '2rem'
-        }}>Your Personal Fitness Companion</p>
-        
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '2rem',
-          marginTop: '2rem'
-        }}>
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            padding: '2rem',
-            borderRadius: '15px',
-            textAlign: 'center',
-            borderLeft: '4px solid #667eea'
-          }}>
-            <h3 style={{ color: '#333', marginBottom: '1rem' }}>🎯 Dashboard</h3>
-            <p style={{ color: '#666' }}>Track your progress with customized metrics</p>
-          </div>
-          
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            padding: '2rem',
-            borderRadius: '15px',
-            textAlign: 'center',
-            borderLeft: '4px solid #667eea'
-          }}>
-            <h3 style={{ color: '#333', marginBottom: '1rem' }}>💪 Workouts</h3>
-            <p style={{ color: '#666' }}>Log and track your exercise routines</p>
-          </div>
-          
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            padding: '2rem',
-            borderRadius: '15px',
-            textAlign: 'center',
-            borderLeft: '4px solid #667eea'
-          }}>
-            <h3 style={{ color: '#333', marginBottom: '1rem' }}>🍎 Nutrition</h3>
-            <p style={{ color: '#666' }}>Monitor your daily nutrition intake</p>
-          </div>
-          
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            padding: '2rem',
-            borderRadius: '15px',
-            textAlign: 'center',
-            borderLeft: '4px solid #667eea'
-          }}>
-            <h3 style={{ color: '#333', marginBottom: '1rem' }}>📊 Analytics</h3>
-            <p style={{ color: '#666' }}>View your fitness progress and trends</p>
-          </div>
-          
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            padding: '2rem',
-            borderRadius: '15px',
-            textAlign: 'center',
-            borderLeft: '4px solid #667eea'
-          }}>
-            <h3 style={{ color: '#333', marginBottom: '1rem' }}>🏆 Community</h3>
-            <p style={{ color: '#666' }}>Join challenges with other fitness enthusiasts</p>
-          </div>
-          
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            padding: '2rem',
-            borderRadius: '15px',
-            textAlign: 'center',
-            borderLeft: '4px solid #667eea'
-          }}>
-            <h3 style={{ color: '#333', marginBottom: '1rem' }}>🤖 AI Assistant</h3>
-            <p style={{ color: '#666' }}>Get personalized fitness advice 24/7</p>
-          </div>
+    <div className="app">
+      <nav className="navbar">
+        <div className="nav-brand">
+          <h2>🏋️‍♀️ FitBuddy</h2>
         </div>
-        
-        <div style={{
-          textAlign: 'center',
-          marginTop: '2rem',
-          padding: '2rem',
-          backgroundColor: '#e8f2ff',
-          borderRadius: '10px'
-        }}>
-          <h2 style={{ color: '#667eea', marginBottom: '1rem' }}>✅ Website Status</h2>
-          <p style={{ color: '#333', fontSize: '1.1rem' }}>FitBuddy is now loading successfully!</p>
-          <p style={{ color: '#666', marginTop: '0.5rem' }}>Time: {new Date().toLocaleString()}</p>
+        <div className="nav-links">
+          <button 
+            className={`nav-button ${currentPage === 'home' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('home')}
+          >
+            🏠 Home
+          </button>
+          <button 
+            className={`nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('dashboard')}
+          >
+            📊 Dashboard
+          </button>
+          <button 
+            className={`nav-button ${currentPage === 'workouts' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('workouts')}
+          >
+            💪 Workouts
+          </button>
+          <button 
+            className={`nav-button ${currentPage === 'nutrition' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('nutrition')}
+          >
+            🍎 Nutrition
+          </button>
+          <button 
+            className={`nav-button ${currentPage === 'community' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('community')}
+          >
+            🏆 Community
+          </button>
         </div>
-      </div>
+      </nav>
+      
+      <main className="main-content">
+        {renderPage()}
+      </main>
+      
+      <footer className="footer">
+        <p>FitBuddy - Your Personal Fitness Companion | Built with React</p>
+      </footer>
     </div>
   )
 }
