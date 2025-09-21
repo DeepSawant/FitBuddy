@@ -244,8 +244,9 @@ body {
 .landing-container {
   max-width: 1200px;
   width: 100%;
-  min-height: 600px;
-  max-height: 700px;
+  height: auto;
+  min-height: 85vh;
+  max-height: 90vh;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -260,13 +261,14 @@ body {
 .landing-left {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 2.5rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   position: relative;
   overflow-y: auto;
-  gap: 2rem;
+  gap: 1.5rem;
+  min-height: 0;
 }
 
 .landing-left::before {
@@ -404,16 +406,18 @@ body {
 /* Right Side - Authentication Form */
 .landing-right {
   background: white;
-  padding: 2.5rem;
+  padding: 2rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .auth-container {
   width: 100%;
   max-width: 380px;
+  padding: 1rem 0;
 }
 
 .auth-header {
@@ -892,6 +896,93 @@ body {
   margin-bottom: 2.5rem;
   font-size: 1rem;
   line-height: 1.6;
+}
+
+/* Mobile Responsive - Landing Page */
+@media (max-width: 768px) {
+  .landing-page {
+    padding: 1rem;
+  }
+  
+  .landing-container {
+    min-height: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  
+  .landing-left {
+    padding: 2rem 1.5rem;
+    gap: 1.25rem;
+    min-height: auto;
+  }
+  
+  .landing-right {
+    padding: 2rem 1.5rem;
+  }
+  
+  .brand-name {
+    font-size: 2rem;
+  }
+  
+  .brand-tagline {
+    font-size: 0.95rem;
+  }
+  
+  .feature-card {
+    padding: 0.75rem;
+  }
+  
+  .feature-card h3 {
+    font-size: 0.95rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.8rem;
+  }
+  
+  .testimonial {
+    padding: 0.875rem;
+  }
+  
+  .auth-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  .auth-container {
+    max-width: none;
+    padding: 0.5rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-page {
+    padding: 0.5rem;
+  }
+  
+  .landing-left {
+    padding: 1.5rem 1rem;
+  }
+  
+  .landing-right {
+    padding: 1.5rem 1rem;
+  }
+  
+  .brand-name {
+    font-size: 1.75rem;
+  }
+  
+  .feature-card {
+    padding: 0.625rem;
+    gap: 0.5rem;
+  }
+  
+  .auth-form {
+    gap: 0.875rem;
+  }
+  
+  .auth-form .form-group input {
+    padding: 0.675rem 0.75rem;
+  }
 }
 
 /* Navigation */
@@ -2709,5 +2800,68 @@ body {
   
   .features-grid {
     grid-template-columns: 1fr;
+  }
+  
+  /* Fix landing page mobile issues */
+  .landing-page {
+    padding: 1rem;
+    align-items: flex-start;
+  }
+  
+  .landing-container {
+    min-height: 100vh;
+    max-height: none;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  
+  .landing-left {
+    padding: 2rem 1.5rem;
+    gap: 1.25rem;
+    min-height: auto;
+    order: 1;
+  }
+  
+  .landing-right {
+    padding: 2rem 1.5rem;
+    order: 2;
+    align-items: flex-start;
+  }
+  
+  .brand-name {
+    font-size: 2rem;
+  }
+  
+  .brand-tagline {
+    font-size: 0.95rem;
+  }
+  
+  .feature-card {
+    padding: 0.75rem;
+  }
+  
+  .feature-card h3 {
+    font-size: 0.95rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.8rem;
+  }
+  
+  .testimonial {
+    padding: 0.875rem;
+  }
+  
+  .auth-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  .auth-container {
+    max-width: none;
+    padding: 0.5rem 0;
+  }
+  
+  .auth-form {
+    gap: 0.875rem;
   }
 }
