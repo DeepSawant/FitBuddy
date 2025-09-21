@@ -1,7 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import LandingPage from './components/LandingPage'
+import ProfileSetup from './components/ProfileSetup'
+import PersonalizedPlan from './components/PersonalizedPlan'
 import './App.css'
 
 function App() {
+  const [appState, setAppState] = useState('loading') // loading, landing, profile-setup, plan-generation, dashboard
+  const [user, setUser] = useState(null)
+  const [userProfile, setUserProfile] = useState(null)
+  const [userPlan, setUserPlan] = useState(null)
   const [currentPage, setCurrentPage] = useState('home')
   const [userData, setUserData] = useState({
     steps: 0,
@@ -9,6 +16,60 @@ function App() {
     workouts: 0,
     mood: 5
   })
+
+  useEffect(() => {
+    // Check if user is already logged in and has completed setup
+    const savedUser = localStorage.getItem('fitbuddyUser')
+    const savedProfile = localStorage.getItem('userProfile')
+    const savedPlan = localStorage.getItem('userPlan')
+    
+    if (savedUser && savedProfile && savedPlan) {
+      setUser(JSON.parse(savedUser))
+      setUserProfile(JSON.parse(savedProfile))
+      setUserPlan(JSON.parse(savedPlan))
+      setAppState('dashboard')
+    } else if (savedUser && savedProfile) {
+      setUser(JSON.parse(savedUser))
+      setUserProfile(JSON.parse(savedProfile))
+      setAppState('plan-generation')
+    } else if (savedUser) {
+      setUser(JSON.parse(savedUser))
+      setAppState('profile-setup')
+    } else {
+      setAppState('landing')
+    }
+  }, [])
+
+  // Authentication handlers
+  const handleLogin = (userData) => {
+    setUser(userData)
+    localStorage.setItem('fitbuddyUser', JSON.stringify(userData))
+    setAppState('profile-setup')
+  }
+
+  const handleProfileComplete = (profileData) => {
+    setUserProfile(profileData)
+    localStorage.setItem('userProfile', JSON.stringify(profileData))
+    setAppState('plan-generation')
+  }
+
+  const handlePlanGenerated = (planData, startJourney = false) => {
+    setUserPlan(planData)
+    localStorage.setItem('userPlan', JSON.stringify(planData))
+    if (startJourney) {
+      setAppState('dashboard')
+    }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('fitbuddyUser')
+    localStorage.removeItem('userProfile')
+    localStorage.removeItem('userPlan')
+    setUser(null)
+    setUserProfile(null)
+    setUserPlan(null)
+    setAppState('landing')
+  }
 
   const updateSteps = (steps) => {
     setUserData(prev => ({ ...prev, steps: parseInt(steps) }))
@@ -18,7 +79,102 @@ function App() {
     setUserData(prev => ({ ...prev, water: Math.min(prev.water + 1, 8) }))
   }
 
-  const renderPage = () => {
+  const renderContent = () => {
+    switch(appState) {
+      case 'loading':
+        return (
+          <div className="loading-screen">
+            <div className="loading-spinner">
+              <div className="spinner"></div>
+            </div>
+            <h2>Loading FitBuddy...</h2>
+          </div>
+        )
+      
+      case 'landing':
+        return <LandingPage onLogin={handleLogin} />
+      
+      case 'profile-setup':
+        return (
+          <ProfileSetup 
+            onProfileComplete={handleProfileComplete}
+            userName={user?.name || 'User'}
+          />
+        )
+      
+      case 'plan-generation':
+        return (
+          <PersonalizedPlan 
+            profileData={userProfile}
+            userName={user?.name || 'User'}
+            onPlanGenerated={handlePlanGenerated}
+          />
+        )
+      
+      case 'dashboard':
+        return (
+          <div className="dashboard-app">
+            <nav className="dashboard-navbar">
+              <div className="nav-brand">
+                <h2>🏋️‍♀️ FitBuddy</h2>
+                <span className="welcome-text">Welcome, {user?.name}!</span>
+              </div>
+              <div className="nav-links">
+                <button 
+                  className={`nav-button ${currentPage === 'home' ? 'active' : ''}`}
+                  onClick={() => setCurrentPage('home')}
+                >
+                  🏠 Home
+                </button>
+                <button 
+                  className={`nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
+                  onClick={() => setCurrentPage('dashboard')}
+                >
+                  📊 Dashboard
+                </button>
+                <button 
+                  className={`nav-button ${currentPage === 'workouts' ? 'active' : ''}`}
+                  onClick={() => setCurrentPage('workouts')}
+                >
+                  💪 Workouts
+                </button>
+                <button 
+                  className={`nav-button ${currentPage === 'nutrition' ? 'active' : ''}`}
+                  onClick={() => setCurrentPage('nutrition')}
+                >
+                  🍎 Nutrition
+                </button>
+                <button 
+                  className={`nav-button ${currentPage === 'community' ? 'active' : ''}`}
+                  onClick={() => setCurrentPage('community')}
+                >
+                  🏆 Community
+                </button>
+                <button 
+                  className="nav-button logout-btn"
+                  onClick={handleLogout}
+                >
+                  🚪 Logout
+                </button>
+              </div>
+            </nav>
+            
+            <main className="dashboard-content">
+              {renderDashboardPage()}
+            </main>
+            
+            <footer className="dashboard-footer">
+              <p>FitBuddy - Your Personal Fitness Companion | Built with React</p>
+            </footer>
+          </div>
+        )
+      
+      default:
+        return <LandingPage onLogin={handleLogin} />
+    }
+  }
+
+  const renderDashboardPage = () => {
     switch(currentPage) {
       case 'dashboard':
         return (
@@ -189,51 +345,7 @@ function App() {
 
   return (
     <div className="app">
-      <nav className="navbar">
-        <div className="nav-brand">
-          <h2>🏋️‍♀️ FitBuddy</h2>
-        </div>
-        <div className="nav-links">
-          <button 
-            className={`nav-button ${currentPage === 'home' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('home')}
-          >
-            🏠 Home
-          </button>
-          <button 
-            className={`nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('dashboard')}
-          >
-            📊 Dashboard
-          </button>
-          <button 
-            className={`nav-button ${currentPage === 'workouts' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('workouts')}
-          >
-            💪 Workouts
-          </button>
-          <button 
-            className={`nav-button ${currentPage === 'nutrition' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('nutrition')}
-          >
-            🍎 Nutrition
-          </button>
-          <button 
-            className={`nav-button ${currentPage === 'community' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('community')}
-          >
-            🏆 Community
-          </button>
-        </div>
-      </nav>
-      
-      <main className="main-content">
-        {renderPage()}
-      </main>
-      
-      <footer className="footer">
-        <p>FitBuddy - Your Personal Fitness Companion | Built with React</p>
-      </footer>
+      {renderContent()}
     </div>
   )
 }
