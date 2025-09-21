@@ -244,7 +244,8 @@ body {
 .landing-container {
   max-width: 1200px;
   width: 100%;
-  height: 600px;
+  min-height: 600px;
+  max-height: 700px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -259,12 +260,13 @@ body {
 .landing-left {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 3rem;
+  padding: 2.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  gap: 2rem;
 }
 
 .landing-left::before {
@@ -281,22 +283,23 @@ body {
 .brand-section {
   position: relative;
   z-index: 1;
+  flex-shrink: 0;
 }
 
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .logo-icon {
-  font-size: 3rem;
+  font-size: 2.5rem;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 .brand-name {
-  font-size: 2.75rem;
+  font-size: 2.25rem;
   font-weight: 900;
   margin: 0;
   letter-spacing: -0.02em;
@@ -305,9 +308,9 @@ body {
 }
 
 .brand-tagline {
-  font-size: 1.1rem;
+  font-size: 1rem;
   opacity: 0.9;
-  line-height: 1.5;
+  line-height: 1.4;
   margin: 0;
   font-weight: 400;
 }
@@ -315,18 +318,19 @@ body {
 .features-showcase {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   position: relative;
   z-index: 1;
+  flex: 1;
 }
 
 .feature-card {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.75rem;
+  padding: 0.875rem;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: 12px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
@@ -337,43 +341,45 @@ body {
 }
 
 .feature-card .feature-icon {
-  font-size: 2rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
 }
 
 .feature-card h3 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem 0;
   color: white;
+  line-height: 1.3;
 }
 
 .feature-card p {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.9;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 .testimonial {
   text-align: center;
-  padding: 1.5rem;
+  padding: 1rem;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: 12px;
   backdrop-filter: blur(10px);
   position: relative;
   z-index: 1;
+  flex-shrink: 0;
 }
 
 .testimonial p {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-style: italic;
-  margin: 0 0 0.75rem 0;
-  line-height: 1.5;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
 }
 
 .testimonial span {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   opacity: 0.8;
   font-weight: 500;
 }
@@ -398,24 +404,25 @@ body {
 /* Right Side - Authentication Form */
 .landing-right {
   background: white;
-  padding: 3rem;
+  padding: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-y: auto;
 }
 
 .auth-container {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
 }
 
 .auth-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .auth-header h2 {
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--gray-900);
   margin: 0 0 0.5rem 0;
@@ -424,31 +431,31 @@ body {
 
 .auth-header p {
   color: var(--gray-600);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .auth-toggle {
   display: flex;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   background: var(--gray-100);
-  border-radius: 12px;
-  padding: 4px;
+  border-radius: 10px;
+  padding: 3px;
   position: relative;
 }
 
 .toggle-btn {
   flex: 1;
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 0.75rem;
   border: none;
   background: transparent;
   color: var(--gray-600);
   font-weight: 500;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 7px;
   transition: all 0.3s ease;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   position: relative;
   z-index: 1;
 }
@@ -467,7 +474,7 @@ body {
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .auth-form .form-group {
@@ -476,18 +483,18 @@ body {
 
 .auth-form .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   color: var(--gray-700);
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .auth-form .form-group input {
   width: 100%;
-  padding: 0.875rem 1rem;
+  padding: 0.75rem 0.875rem;
   border: 2px solid var(--gray-200);
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
   background: var(--gray-50);
   color: var(--gray-900);
@@ -506,12 +513,12 @@ body {
 
 .auth-submit-btn {
   width: 100%;
-  padding: 1rem;
+  padding: 0.875rem;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -526,14 +533,14 @@ body {
 
 .auth-footer {
   text-align: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--gray-200);
 }
 
 .auth-footer p {
   color: var(--gray-600);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   margin: 0;
 }
 
