@@ -18,34 +18,46 @@ function App() {
   })
 
   useEffect(() => {
-    // Clear any old data to ensure new visitors always see the landing page
-    localStorage.removeItem('fitbuddyUser')
-    localStorage.removeItem('userProfile')
-    localStorage.removeItem('userPlan')
-    setAppState('landing')
-    
-    // Commented out previous code to always show landing page first
-    /*
+    // Check for existing user session on page load
     const savedUser = localStorage.getItem('fitbuddyUser')
     const savedProfile = localStorage.getItem('userProfile')
     const savedPlan = localStorage.getItem('userPlan')
     
-    if (savedUser && savedProfile && savedPlan) {
-      setUser(JSON.parse(savedUser))
-      setUserProfile(JSON.parse(savedProfile))
-      setUserPlan(JSON.parse(savedPlan))
-      setAppState('dashboard')
-    } else if (savedUser && savedProfile) {
-      setUser(JSON.parse(savedUser))
-      setUserProfile(JSON.parse(savedProfile))
-      setAppState('plan-generation')
-    } else if (savedUser) {
-      setUser(JSON.parse(savedUser))
-      setAppState('profile-setup')
-    } else {
+    try {
+      if (savedUser && savedProfile && savedPlan) {
+        // User has completed everything - go to dashboard
+        setUser(JSON.parse(savedUser))
+        setUserProfile(JSON.parse(savedProfile))
+        setUserPlan(JSON.parse(savedPlan))
+        
+        // Load saved dashboard data if available
+        const savedUserData = localStorage.getItem('fitbuddyDashboardData')
+        if (savedUserData) {
+          setUserData(JSON.parse(savedUserData))
+        }
+        
+        setAppState('dashboard')
+      } else if (savedUser && savedProfile) {
+        // User has profile but no plan - go to plan generation
+        setUser(JSON.parse(savedUser))
+        setUserProfile(JSON.parse(savedProfile))
+        setAppState('plan-generation')
+      } else if (savedUser) {
+        // User is logged in but no profile - go to profile setup
+        setUser(JSON.parse(savedUser))
+        setAppState('profile-setup')
+      } else {
+        // No user data - show landing page
+        setAppState('landing')
+      }
+    } catch (error) {
+      // If there's any error parsing saved data, clear it and start fresh
+      console.warn('Error parsing saved user data:', error)
+      localStorage.removeItem('fitbuddyUser')
+      localStorage.removeItem('userProfile')
+      localStorage.removeItem('userPlan')
       setAppState('landing')
     }
-    */
   }, [])
 
   // Authentication handlers
@@ -73,18 +85,58 @@ function App() {
     localStorage.removeItem('fitbuddyUser')
     localStorage.removeItem('userProfile')
     localStorage.removeItem('userPlan')
+    localStorage.removeItem('fitbuddyDashboardData')
     setUser(null)
     setUserProfile(null)
     setUserPlan(null)
+    setUserData({
+      steps: 0,
+      water: 0,
+      workouts: 0,
+      mood: 5
+    })
+    setCurrentPage('home')
     setAppState('landing')
   }
 
   const updateSteps = (steps) => {
-    setUserData(prev => ({ ...prev, steps: parseInt(steps) }))
+    const newUserData = { ...userData, steps: parseInt(steps) }
+    setUserData(newUserData)
+    localStorage.setItem('fitbuddyDashboardData', JSON.stringify(newUserData))
   }
 
   const addWater = () => {
-    setUserData(prev => ({ ...prev, water: Math.min(prev.water + 1, 8) }))
+    const newUserData = { ...userData, water: Math.min(userData.water + 1, 8) }
+    setUserData(newUserData)
+    localStorage.setItem('fitbuddyDashboardData', JSON.stringify(newUserData))
+  }
+  
+  const updateMood = (mood) => {
+    const newUserData = { ...userData, mood: parseInt(mood) }
+    setUserData(newUserData)
+    localStorage.setItem('fitbuddyDashboardData', JSON.stringify(newUserData))
+  }
+  
+  const addWorkout = () => {
+    const newUserData = { ...userData, workouts: userData.workouts + 1 }
+    setUserData(newUserData)
+    localStorage.setItem('fitbuddyDashboardData', JSON.stringify(newUserData))
+  }
+  
+  const resetProgress = () => {
+    const confirmReset = window.confirm(
+      'Are you sure you want to reset your daily progress? This will clear your steps, water intake, and mood data for today.'
+    )
+    if (confirmReset) {
+      const resetData = {
+        steps: 0,
+        water: 0,
+        workouts: 0,
+        mood: 5
+      }
+      setUserData(resetData)
+      localStorage.setItem('fitbuddyDashboardData', JSON.stringify(resetData))
+    }
   }
 
   const renderContent = () => {
@@ -159,6 +211,13 @@ function App() {
                   🏆 Community
                 </button>
                 <button 
+                  className="nav-button"
+                  onClick={resetProgress}
+                  title="Reset today's progress (steps, water, workouts, mood)"
+                >
+                  🔄 Reset
+                </button>
+                <button 
                   className="nav-button logout-btn"
                   onClick={handleLogout}
                 >
@@ -227,7 +286,7 @@ function App() {
                 <div className="workout-count">
                   <span>{userData.workouts} workouts this week</span>
                 </div>
-                <button onClick={() => setUserData(prev => ({ ...prev, workouts: prev.workouts + 1 }))} className="btn-primary">
+                <button onClick={addWorkout} className="btn-primary">
                   + Log Workout
                 </button>
               </div>
@@ -240,7 +299,7 @@ function App() {
                     {[1,2,3,4,5,6,7,8,9,10].map(num => (
                       <button 
                         key={num}
-                        onClick={() => setUserData(prev => ({ ...prev, mood: num }))}
+                        onClick={() => updateMood(num)}
                         className={`mood-btn ${userData.mood === num ? 'active' : ''}`}
                       >
                         {num}
@@ -261,13 +320,13 @@ function App() {
               <div className="quick-workouts">
                 <h3>Quick Log</h3>
                 <div className="workout-buttons">
-                  <button onClick={() => setUserData(prev => ({ ...prev, workouts: prev.workouts + 1 }))} className="workout-type-btn">
+                  <button onClick={addWorkout} className="workout-type-btn">
                     🏃‍♂️ Cardio
                   </button>
-                  <button onClick={() => setUserData(prev => ({ ...prev, workouts: prev.workouts + 1 }))} className="workout-type-btn">
+                  <button onClick={addWorkout} className="workout-type-btn">
                     💪 Strength
                   </button>
-                  <button onClick={() => setUserData(prev => ({ ...prev, workouts: prev.workouts + 1 }))} className="workout-type-btn">
+                  <button onClick={addWorkout} className="workout-type-btn">
                     🧘‍♀️ Yoga
                   </button>
                 </div>
