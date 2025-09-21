@@ -64,7 +64,8 @@ const LandingPage = ({ onLogin, onSignup }) => {
     if (isLogin) {
       onLogin(formData)
     } else {
-      onSignup(formData)
+      // For signup, treat it the same as login for now
+      onLogin(formData)
     }
   }
 

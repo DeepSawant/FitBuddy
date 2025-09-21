@@ -18,7 +18,14 @@ function App() {
   })
 
   useEffect(() => {
-    // Check if user is already logged in and has completed setup
+    // Clear any old data to ensure new visitors always see the landing page
+    localStorage.removeItem('fitbuddyUser')
+    localStorage.removeItem('userProfile')
+    localStorage.removeItem('userPlan')
+    setAppState('landing')
+    
+    // Commented out previous code to always show landing page first
+    /*
     const savedUser = localStorage.getItem('fitbuddyUser')
     const savedProfile = localStorage.getItem('userProfile')
     const savedPlan = localStorage.getItem('userPlan')
@@ -38,6 +45,7 @@ function App() {
     } else {
       setAppState('landing')
     }
+    */
   }, [])
 
   // Authentication handlers
