@@ -1,24 +1,29 @@
 import { useState } from 'react'
 import './App.css'
-import { FitBuddyProvider, useFitBuddy } from './context/FitBuddyContext'
-import Dashboard from './components/Dashboard'
-import MoodTracker from './components/MoodTracker'
-import Community from './components/Community'
-import Chatbot from './components/Chatbot'
-import AuthModal from './components/AuthModal'
-import WorkoutLogger from './components/WorkoutLogger'
-import NutritionTracker from './components/NutritionTracker'
-import ProgressAnalytics from './components/ProgressAnalytics'
 
-function AppContent() {
-  const { state, logout } = useFitBuddy();
+function App() {
   const [currentSection, setCurrentSection] = useState('home')
-  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [userLoggedIn, setUserLoggedIn] = useState(false)
 
   const renderSection = () => {
     switch(currentSection) {
       case 'dashboard':
-        return <Dashboard />
+        return (
+          <div className="section">
+            <h2>📊 Dashboard</h2>
+            <p>Track your daily fitness progress here!</p>
+            <div className="dashboard-preview">
+              <div className="stat-card">
+                <h3>🏃‍♂️ Steps Today</h3>
+                <p>0 / 10,000 steps</p>
+              </div>
+              <div className="stat-card">
+                <h3>💧 Water Intake</h3>
+                <p>0 / 8 glasses</p>
+              </div>
+            </div>
+          </div>
+        )
       case 'roadmap':
         return (
           <div className="section">
@@ -55,43 +60,55 @@ function AppContent() {
           </div>
         )
       case 'community':
-        return <Community />
-      case 'tracker':
         return (
           <div className="section">
-            <h2>📱 Health Trackers</h2>
-            <div className="trackers-container">
-              <MoodTracker />
-              
-              <div className="tracker-item">
-                <h3>💧 Hydration Tracker</h3>
-                <p>Track your daily water intake in the Dashboard section. Stay hydrated for optimal performance!</p>
-              </div>
-              
-              <div className="tracker-item">
-                <h3>😴 Sleep Tracker</h3>
-                <p>Monitor your sleep patterns and quality. Good sleep is essential for recovery and fitness goals.</p>
-                <div className="sleep-tips">
-                  <h4>Sleep Tips:</h4>
-                  <ul>
-                    <li>Aim for 7-9 hours per night</li>
-                    <li>Keep a consistent sleep schedule</li>
-                    <li>Create a relaxing bedtime routine</li>
-                    <li>Avoid screens before bed</li>
-                  </ul>
-                </div>
+            <h2>🏆 Community</h2>
+            <p>Join fitness challenges and connect with others!</p>
+            <div className="community-preview">
+              <div className="challenge-card">
+                <h3>30-Day Step Challenge</h3>
+                <p>Walk 10,000 steps daily for 30 days</p>
+                <button className="btn-primary">Join Challenge</button>
               </div>
             </div>
           </div>
         )
       case 'workouts':
-        return <WorkoutLogger />
+        return (
+          <div className="section">
+            <h2>🏋️‍♀️ Workouts</h2>
+            <p>Log and track your workouts!</p>
+            <button className="btn-primary">+ Add Workout</button>
+          </div>
+        )
       case 'nutrition':
-        return <NutritionTracker />
+        return (
+          <div className="section">
+            <h2>🍎 Nutrition</h2>
+            <p>Track your meals and nutrition!</p>
+            <button className="btn-primary">+ Add Meal</button>
+          </div>
+        )
       case 'analytics':
-        return <ProgressAnalytics />
+        return (
+          <div className="section">
+            <h2>📊 Analytics</h2>
+            <p>View your progress and insights!</p>
+            <div className="progress-preview">
+              <p>Progress charts and statistics will appear here.</p>
+            </div>
+          </div>
+        )
       case 'chatbot':
-        return <Chatbot />
+        return (
+          <div className="section">
+            <h2>🤖 AI Chatbot</h2>
+            <p>Chat with your AI fitness assistant!</p>
+            <div className="chat-preview">
+              <p>AI: Hi! I'm here to help with your fitness journey. How can I assist you today?</p>
+            </div>
+          </div>
+        )
       default:
         return (
           <div className="hero-section">
@@ -191,16 +208,15 @@ function AppContent() {
             </button>
           </div>
           <div className="nav-user">
-            {state.user.isLoggedIn ? (
+            {userLoggedIn ? (
               <div className="user-profile">
-                <img src={state.user.avatar} alt="Profile" className="user-avatar" />
-                <span className="user-name">{state.user.name}</span>
-                <button className="logout-btn" onClick={logout}>
+                <span className="user-name">FitBuddy User</span>
+                <button className="logout-btn" onClick={() => setUserLoggedIn(false)}>
                   Logout
                 </button>
               </div>
             ) : (
-              <button className="login-btn" onClick={() => setShowAuthModal(true)}>
+              <button className="login-btn" onClick={() => setUserLoggedIn(true)}>
                 Login
               </button>
             )}
@@ -210,20 +226,8 @@ function AppContent() {
           {renderSection()}
         </main>
         
-        <AuthModal 
-          isOpen={showAuthModal} 
-          onClose={() => setShowAuthModal(false)} 
-        />
       </div>
     )
-}
-
-function App() {
-  return (
-    <FitBuddyProvider>
-      <AppContent />
-    </FitBuddyProvider>
-  )
 }
 
 export default App
